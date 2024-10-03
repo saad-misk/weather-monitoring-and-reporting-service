@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace weatherMonitoringAndReportingService.Models
 {
-    public class WeatherState
+    public class WeatherData
     {
         [Required]
         public string? Location { get; set; }

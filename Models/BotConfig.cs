@@ -8,9 +8,9 @@ namespace weatherMonitoringAndReportingService.Models
 {
     public class BotConfig
     {
-        public bool IsEnabled {  get; set; }
-        public double Threshold {  get; set; }
-        public string? Message { get; set; }
-
+        public bool Enabled { get; set; }
+        public double? HumidityThreshold { get; set; }  // Nullable, since not all bots use humidity
+        public double? TemperatureThreshold { get; set; }  // Nullable, since not all bots use temperature
+        public string Message { get; set; }
     }
 }
