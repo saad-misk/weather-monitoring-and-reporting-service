@@ -8,9 +8,9 @@ using weatherMonitoringAndReportingService.Models;
 
 namespace weatherMonitoringAndReportingService.InputParsing
 {
-    public class JsonWeatherDataParser : IWeathreDataParser
+    public class JsonWeatherDataParser : IWeatherDataParser
     {
-        WeatherState Parse(string input)
+        public WeatherState? Parse(string input)
         {
             return JsonConvert.DeserializeObject<WeatherState>(input);
         }

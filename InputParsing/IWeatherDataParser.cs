@@ -7,8 +7,8 @@ using weatherMonitoringAndReportingService.Models;
 
 namespace weatherMonitoringAndReportingService.InputParsing
 {
-    public interface IWeathreDataParser
+    public interface IWeatherDataParser
     {
-        WeatherState Parse(string input);
+        WeatherState? Parse(string input);
     }
 }

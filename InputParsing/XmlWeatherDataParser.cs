@@ -4,9 +4,9 @@ using weatherMonitoringAndReportingService.Models;
 
 namespace weatherMonitoringAndReportingService.InputParsing
 {
-    public class XmlWeatherDataParser
+    public class XmlWeatherDataParser : IWeatherDataParser
     {
-        WeatherState Parse(string input)
+        public WeatherState? Parse(string input)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(WeatherState));
 
