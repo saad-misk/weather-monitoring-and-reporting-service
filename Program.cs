@@ -1,5 +1,4 @@
-﻿
-using System.Text;
+﻿using System.Text;
 using weatherMonitoringAndReportingService.InputParsing;
 using weatherMonitoringAndReportingService.Models;
 using weatherMonitoringAndReportingService.Services;
@@ -10,31 +9,55 @@ namespace WeatherApp
     {
         static void Main()
         {
+            Console.WriteLine("Welcome to the Weather Monitoring System!");
 
-            while (true){
+            while (true)
+            {
+                Console.WriteLine("\nEnter Weather Data in JSON or XML format.");
+                Console.WriteLine("To exit, type 'exit'.");
 
-                Console.WriteLine("Enter Weather Data(JSON or XML)");
                 string input = ReadInputFromUser();
+
+                if (input.ToLower() == "exit")
+                {
+                    Console.WriteLine("Exiting the program. Goodbye!");
+                    break;
+                }
 
                 WeatherMonitoringSystem system = new WeatherMonitoringSystem();
                 IWeatherDataParser parser;
-                WeatherData x;
-                if (input.TrimStart().StartsWith("{"))
-                {
-                    parser = new JsonWeatherDataParser();
-                     x = parser.Parse(input);
-                }
-                else
-                {
-                    parser = new XmlWeatherDataParser();
-                    x = parser.Parse(input);
-                }
+                WeatherData weatherData;
 
-                system.ProccesWeatherData(x);
+                try
+                {
+                    if (input.TrimStart().StartsWith("{"))
+                    {
+                        parser = new JsonWeatherDataParser();
+                        weatherData = parser.Parse(input);
+                        Console.WriteLine("JSON data successfully parsed.");
+                    }
+                    else if (input.TrimStart().StartsWith("<"))
+                    {
+                        parser = new XmlWeatherDataParser();
+                        weatherData = parser.Parse(input);
+                        Console.WriteLine("XML data successfully parsed.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input format. Please provide data in JSON or XML format.");
+                        continue;
+                    }
 
+                    system.ProccesWeatherData(weatherData);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while parsing: {ex.Message}");
+                    Console.WriteLine("Please try again with valid data.");
+                }
             }
-
         }
+
         static string ReadInputFromUser()
         {
             Console.WriteLine("Please enter the weather data:");
