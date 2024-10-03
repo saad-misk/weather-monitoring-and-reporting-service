@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using weatherMonitoringAndReportingService.Models;
+﻿using weatherMonitoringAndReportingService.Models;
 
 namespace weatherMonitoringAndReportingService.Services
 {
     public class SunBot : IWeatherBot
     {
         public bool Enabled { get; set; }
-        public double TemperatureThreshold { get; set; }
+        public double? TemperatureThreshold { get; set; }
         public string? Message { get; set; }
 
         public SunBot(BotConfig botConfig)
         {
-            Enabled = botConfig.IsEnabled;
-            TemperatureThreshold = botConfig.Threshold;
+            Enabled = botConfig.Enabled;
+            TemperatureThreshold = botConfig.TemperatureThreshold;
             Message = botConfig.Message;
         }
-        public void Update(WeatherState data)
+        public void Update(WeatherData data)
         {
             if (Enabled && data.Temperature > TemperatureThreshold)
             {
