@@ -1,4 +1,7 @@
 ﻿using System.Text;
+using weatherMonitoringAndReportingService.Bots;
+using weatherMonitoringAndReportingService.Config;
+using weatherMonitoringAndReportingService.ConfigProcessor;
 using weatherMonitoringAndReportingService.InputParsing;
 using weatherMonitoringAndReportingService.Models;
 using weatherMonitoringAndReportingService.Services;
@@ -7,67 +10,53 @@ namespace WeatherApp
 {
     class Program
     {
-        static void Main()
+        private static WeatherStation _weatherStation = new();
+
+        static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to the Weather Monitoring System!");
+            InitializeApp();
 
-            while (true)
-            {
-                Console.WriteLine("\nEnter Weather Data in JSON or XML format.");
-                Console.WriteLine("To exit, type 'exit'.");
+            IWeatherDataParser parserStrategy = GetParserStrategy();
 
-                string input = ReadInputFromUser();
+            string userInput = GetUserInput();
 
-                if (input.ToLower() == "exit")
-                {
-                    Console.WriteLine("Exiting the program. Goodbye!");
-                    break;
-                }
-
-                WeatherMonitoringSystem system = new WeatherMonitoringSystem();
-                IWeatherDataParser parser;
-                WeatherData weatherData;
-
-                try
-                {
-                    if (input.TrimStart().StartsWith("{"))
-                    {
-                        parser = new JsonWeatherDataParser();
-                        weatherData = parser.Parse(input);
-                        Console.WriteLine("JSON data successfully parsed.");
-                    }
-                    else if (input.TrimStart().StartsWith("<"))
-                    {
-                        parser = new XmlWeatherDataParser();
-                        weatherData = parser.Parse(input);
-                        Console.WriteLine("XML data successfully parsed.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input format. Please provide data in JSON or XML format.");
-                        continue;
-                    }
-
-                    system.ProccesWeatherData(weatherData);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"An error occurred while parsing: {ex.Message}");
-                    Console.WriteLine("Please try again with valid data.");
-                }
-            }
+            WeatherData weatherDetails = parserStrategy.Parse(userInput)!;
+            _weatherStation.Notify(weatherDetails);
         }
 
-        static string ReadInputFromUser()
+        public static void InitializeApp()
         {
-            Console.WriteLine("Please enter the weather data:");
-            Console.WriteLine("Finish your input by pressing Enter on an empty line.");
+            BotsConfigService weatherConfigurationService = new(new JsonConfigProcessor());
+            _weatherStation.Subscribe(new RainBot(weatherConfigurationService));
+            _weatherStation.Subscribe(new SnowBot(weatherConfigurationService));
+            _weatherStation.Subscribe(new SunBot(weatherConfigurationService));
+        }
+
+        private static IWeatherDataParser GetParserStrategy()
+        {
+            Console.WriteLine("Please choose input format:\n1. JSON\n2. XML");
+            int choice;
+            // Ensure valid input
+            while (!int.TryParse(Console.ReadLine(), out choice) || (choice < 1 || choice > 2))
+            {
+                Console.WriteLine("Invalid choice! Please enter 1 or 2.");
+            }
+
+            return choice switch
+            {
+                1 => new JsonWeatherDataParser(),
+                2 => new XmlWeatherDataParser(),
+                _ => null!
+            };
+        }
+
+        private static string GetUserInput()
+        {
+            Console.WriteLine("Enter weather status (type 'STOP' to finish):");
 
             StringBuilder userInput = new StringBuilder();
-            string? line;
-
-            // Read until the user presses Enter on an empty line
-            while ((line = Console.ReadLine()) != null && !string.IsNullOrWhiteSpace(line))
+            string line;
+            while ((line = Console.ReadLine()) != "STOP")
             {
                 userInput.AppendLine(line);
             }

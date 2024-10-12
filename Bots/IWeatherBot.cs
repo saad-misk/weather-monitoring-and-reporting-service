@@ -1,9 +1,9 @@
 ﻿using weatherMonitoringAndReportingService.Models;
 
-namespace weatherMonitoringAndReportingService.Services
+namespace weatherMonitoringAndReportingService.Bots
 {
     public interface IWeatherBot
     {
-        void Update(WeatherData data);
+        void UpdateConfiguration(WeatherData data);
     }
 }

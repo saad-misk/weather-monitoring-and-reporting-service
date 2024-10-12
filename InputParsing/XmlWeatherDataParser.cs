@@ -1,5 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using weatherMonitoringAndReportingService.Models;
 
 namespace weatherMonitoringAndReportingService.InputParsing
@@ -8,29 +7,9 @@ namespace weatherMonitoringAndReportingService.InputParsing
     {
         public WeatherData? Parse(string input)
         {
-            try
-            {
-                XmlSerializer serializer = new XmlSerializer(typeof(WeatherData));
-
-                using (StringReader reader = new StringReader(input))
-                {
-                    return (WeatherData)serializer.Deserialize(reader);
-                }
-            }
-            catch (InvalidOperationException ex)
-            {
-                Console.WriteLine($"Deserialization failed: {ex.Message}");
-            }
-            catch (XmlException ex)
-            {
-                Console.WriteLine($"Malformed XML: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
-
-            return null;
+            var serializer = new XmlSerializer(typeof(WeatherData));
+            using var reader = new StringReader(input);
+            return (WeatherData?)serializer.Deserialize(reader);
         }
     }
 
