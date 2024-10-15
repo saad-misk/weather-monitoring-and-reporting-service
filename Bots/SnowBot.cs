@@ -3,7 +3,7 @@ using weatherMonitoringAndReportingService.Models;
 
 namespace weatherMonitoringAndReportingService.Bots
 {
-    public class SnowBot : IWeatherBot
+    public class SnowBot : IObserver<WeatherData>
     {
         private readonly BotsConfigService _botsConfigService;
         private readonly BotType _botType = BotType.SnowBot;
@@ -12,6 +12,23 @@ namespace weatherMonitoringAndReportingService.Bots
         {
             _botsConfigService = configService;
         }
+
+        public void OnCompleted()
+        {
+            Console.WriteLine($"{_botType}: Status updates completed.");
+        }
+
+        public void OnError(Exception error)
+        {
+            Console.WriteLine($"{_botType}: Error occurred - {error.Message}");
+        }
+
+        public void OnNext(WeatherData value)
+        {
+            Console.WriteLine($"{_botType}: New weather status received.");
+            UpdateConfiguration(value);
+        }
+
         public void UpdateConfiguration(WeatherData data)
         {
             var snowConfig = _botsConfigService.GetBotConfiguration(_botType);

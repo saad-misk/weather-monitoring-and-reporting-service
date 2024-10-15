@@ -4,24 +4,23 @@ using weatherMonitoringAndReportingService.Config;
 using weatherMonitoringAndReportingService.ConfigProcessor;
 using weatherMonitoringAndReportingService.InputParsing;
 using weatherMonitoringAndReportingService.Models;
-using weatherMonitoringAndReportingService.Services;
 
 namespace WeatherApp
 {
     class Program
     {
-        private static WeatherStation _weatherStation = new();
+        private static BotConfigObservable _weatherStation = new();
 
         static void Main(string[] args)
         {
             InitializeApp();
 
-            IWeatherDataParser parserStrategy = GetParserStrategy();
+            IWeatherDataParserStrategy parserStrategy = GetParserStrategy();
 
             string userInput = GetUserInput();
 
             WeatherData weatherDetails = parserStrategy.Parse(userInput)!;
-            _weatherStation.Notify(weatherDetails);
+            _weatherStation.NotifyObservers(weatherDetails);
         }
 
         public static void InitializeApp()
@@ -32,11 +31,10 @@ namespace WeatherApp
             _weatherStation.Subscribe(new SunBot(weatherConfigurationService));
         }
 
-        private static IWeatherDataParser GetParserStrategy()
+        private static IWeatherDataParserStrategy GetParserStrategy()
         {
             Console.WriteLine("Please choose input format:\n1. JSON\n2. XML");
             int choice;
-            // Ensure valid input
             while (!int.TryParse(Console.ReadLine(), out choice) || (choice < 1 || choice > 2))
             {
                 Console.WriteLine("Invalid choice! Please enter 1 or 2.");
@@ -56,7 +54,7 @@ namespace WeatherApp
 
             StringBuilder userInput = new StringBuilder();
             string line;
-            while ((line = Console.ReadLine()) != "STOP")
+            while ((line = Console.ReadLine()!) != "STOP")
             {
                 userInput.AppendLine(line);
             }

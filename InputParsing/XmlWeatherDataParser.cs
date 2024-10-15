@@ -3,7 +3,7 @@ using weatherMonitoringAndReportingService.Models;
 
 namespace weatherMonitoringAndReportingService.InputParsing
 {
-    public class XmlWeatherDataParser : IWeatherDataParser
+    public class XmlWeatherDataParser : IWeatherDataParserStrategy
     {
         public WeatherData? Parse(string input)
         {

@@ -1,4 +1,5 @@
-﻿namespace weatherMonitoringAndReportingService.Models
+﻿
+namespace weatherMonitoringAndReportingService.Models
 {
     public class BotConfig
     {
