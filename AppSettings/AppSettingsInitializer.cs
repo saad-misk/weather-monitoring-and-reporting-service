@@ -8,7 +8,7 @@ namespace weatherMonitoringAndReportingService.AppSettings
 
         private AppSettingsInitializer()
         {
-            string  appSettingsJson = File.ReadAllText("../../../../weather-monitoring-and-reporting-service/AppSettings/appsettings.json");
+            string  appSettingsJson = File.ReadAllText("../../../../../weather-monitoring-and-reporting-service/AppSettings/appsettings.json");
             _appSettings = JsonConvert.DeserializeObject<AppSettingsModel>(appSettingsJson);
         }
 
