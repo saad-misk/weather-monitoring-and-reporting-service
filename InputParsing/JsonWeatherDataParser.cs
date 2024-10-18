@@ -7,11 +7,20 @@ namespace weatherMonitoringAndReportingService.InputParsing
     {
         public WeatherData Parse(string input)
         {
-            var weatherData = JsonConvert.DeserializeObject<WeatherData>(input);
-            if (weatherData == null)
+            if (input == null)
+            {
+                throw new ArgumentNullException("Input cannot be null.");
+            }
+            WeatherData? weatherData;
+            try
+            {
+                weatherData = JsonConvert.DeserializeObject<WeatherData>(input);
+            }
+            catch (Exception)
             {
                 throw new InvalidOperationException("Deserialization failed; result is null.");
             }
+            
             return weatherData;
         }
     }

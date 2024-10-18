@@ -7,9 +7,22 @@ namespace weatherMonitoringAndReportingService.InputParsing
     {
         public WeatherData? Parse(string input)
         {
+            if( input == null)
+            {
+                throw new ArgumentNullException("input");
+            }
             var serializer = new XmlSerializer(typeof(WeatherData));
             using var reader = new StringReader(input);
-            return (WeatherData?)serializer.Deserialize(reader);
+            WeatherData? weatherData;
+            try
+            {
+                weatherData = serializer.Deserialize(reader) as WeatherData;
+            }
+            catch
+            {
+                throw new InvalidOperationException("Deserialization failed; result is null.");
+            }
+            return weatherData;
         }
     }
 
